@@ -15,7 +15,14 @@
 import urllib2
 import json
 import time
-from redis import Redis
+
+class MockRedis:
+    def __init__(self, **kwargs):
+        raise NotImplementedError("Redis is not installed but is required for caching. Install it or disable caching")
+try:
+    from redis import Redis
+except ImportError:
+    Redis = MockRedis
 
 
 class PeeringDB:
@@ -30,7 +37,8 @@ class PeeringDB:
         self.cache_enable = cache
         self.cache_ttl = cache_ttl
         self.cache_prefix = cache_prefix
-        self.redis = Redis(host=cache_host, port=cache_port, db=cache_db)
+        if cache:
+            self.redis = Redis(host=cache_host, port=cache_port, db=cache_db)
         return
 
     def pdb_get(self, param, cache=True):
