@@ -131,7 +131,7 @@ class PeeringDB:
             asn_ixlans[asnnum] = []
             # get ixlans for each asn
             for link in asn["ixlink_set"]:
-                ixlan_id = link["ixlan"]
+                ixlan_id = link["ixlan_id"]
                 asn_ixlans[asnnum].append(ixlan_id)
                 if ixlan_id not in ixlan_all:
                     ixlan_all[ixlan_id] = None
@@ -146,7 +146,7 @@ class PeeringDB:
             if occurs == len(asnnums):
                 ixlan_obj = self.ixlan(ixlan)
                 # grab ix object too
-                ixlan_obj["ix_obj"] = self.ix(ixlan_obj["ix"])
+                ixlan_obj["ix_obj"] = self.ix(ixlan_obj["ix_id"])
                 ixlan_obj["links"] = []
                 for asn in asns:
                     ixlan_obj["links"].extend(self.get_ixlanlinks(asns[asn], ixlan))
@@ -157,6 +157,6 @@ class PeeringDB:
     def get_ixlanlinks(self, asn, ixlan_id):
         links = []
         for link in asn["ixlink_set"]:
-            if link["ixlan"] == ixlan_id:
+            if link["ixlan_id"] == ixlan_id:
                 links.append(link)
         return links
